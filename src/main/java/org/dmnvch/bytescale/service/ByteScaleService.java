@@ -45,7 +45,7 @@ public class ByteScaleService {
                 if (response.errorBody() != null) {
                     String errorBodyString = response.errorBody().string();
                     UploadFileResponseDto errorResponse = new ObjectMapper().readValue(errorBodyString, UploadFileResponseDto.class);
-                    return ApiResponse.failure("Upload failed with errors: " + errorResponse.getErrors());
+                    return ApiResponse.failure(errorResponse);
                 } else {
                     return ApiResponse.failure("Upload failed with unknown error. Response code: " + response.code());
                 }
