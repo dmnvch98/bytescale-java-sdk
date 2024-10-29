@@ -18,6 +18,9 @@ public class UploadFileResponseDto {
     @JsonProperty("files")
     private final List<FileInfo> files;
 
+    @JsonProperty("errors")
+    private final List<ErrorInfo> errors;
+
     @Builder
     @Jacksonized
     @Getter
@@ -38,5 +41,47 @@ public class UploadFileResponseDto {
 
         @JsonProperty("fileUrl")
         private final String fileUrl;
+    }
+
+    @Builder
+    @Jacksonized
+    @Getter
+    @ToString
+    @EqualsAndHashCode
+    public static class ErrorInfo {
+        @JsonProperty("formDataFieldName")
+        private final String formDataFieldName;
+
+        @JsonProperty("error")
+        private final ErrorDetails error;
+    }
+
+    @Builder
+    @Jacksonized
+    @Getter
+    @ToString
+    @EqualsAndHashCode
+    public static class ErrorDetails {
+        @JsonProperty("message")
+        private final String message;
+
+        @JsonProperty("code")
+        private final String code;
+
+        @JsonProperty("details")
+        private final ErrorDetailsInfo details;
+    }
+
+    @Builder
+    @Jacksonized
+    @Getter
+    @ToString
+    @EqualsAndHashCode
+    public static class ErrorDetailsInfo {
+        @JsonProperty("triggeredBy")
+        private final String triggeredBy;
+
+        @JsonProperty("submittedValue")
+        private final String submittedValue;
     }
 }
