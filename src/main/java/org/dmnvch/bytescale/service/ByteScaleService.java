@@ -31,6 +31,15 @@ public class ByteScaleService {
         }
     }
 
+    public UploadFileResponseDto uploadFile(final MultipartBody.Part filePart) {
+        try {
+            final String authHeader = AUTH_HEADER_NAME + publicKey;
+            return byteScaleApiClient.uploadFile(authHeader, filePart, appId).blockingGet();
+        } catch (final Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public boolean deleteFileUpload(final String filePath) {
         final String authHeader = AUTH_HEADER_NAME + secretKey;
         byteScaleApiClient.deleteFileUpload(authHeader, filePath, appId);
