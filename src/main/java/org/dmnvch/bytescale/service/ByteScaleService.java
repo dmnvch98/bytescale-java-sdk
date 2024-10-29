@@ -48,6 +48,7 @@ public class ByteScaleService {
 
     public JobResponseDto getAntivirusCheck(final String filePath) {
         final String authHeader = AUTH_HEADER_NAME + publicKey;
-        return byteScaleApiClient.getAntivirusCheck(authHeader, filePath, appId).blockingGet();
+        final String url = String.format("https://upcdn.io/%s/antivirus/%s", appId, filePath);
+        return byteScaleApiClient.getAntivirusCheck(authHeader, url).blockingGet();
     }
 }

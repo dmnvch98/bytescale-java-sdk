@@ -24,11 +24,10 @@ public interface ByteScaleApiClient {
             @Query("filePath") String filePath
     );
 
-    @GET("{appId}/antivirus/{filePath}")
+    @GET
     Single<JobResponseDto> getAntivirusCheck(
             @Header("Authorization") final String authorization,
-            @Path("filePath") String filePath,
-            @Path("appId") final String appId
+            @Url String url
     );
 }
 
