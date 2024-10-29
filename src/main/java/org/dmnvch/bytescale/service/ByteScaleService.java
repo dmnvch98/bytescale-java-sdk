@@ -3,6 +3,7 @@ package org.dmnvch.bytescale.service;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.dmnvch.bytescale.client.ByteScaleApiClient;
+import org.dmnvch.bytescale.model.JobResponseDto;
 import org.dmnvch.bytescale.model.UploadFileResponseDto;
 
 import java.io.File;
@@ -28,12 +29,16 @@ public class ByteScaleService {
         } catch (final Exception e) {
             throw new RuntimeException(e);
         }
-
     }
 
     public boolean deleteFileUpload(final String filePath) {
         final String authHeader = AUTH_HEADER_NAME + secretKey;
         byteScaleApiClient.deleteFileUpload(authHeader, filePath, appId);
         return true;
+    }
+
+    public JobResponseDto getAntivirusCheck(final String filePath) {
+        final String authHeader = AUTH_HEADER_NAME + publicKey;
+        return byteScaleApiClient.getAntivirusCheck(authHeader, filePath, appId).blockingGet();
     }
 }
