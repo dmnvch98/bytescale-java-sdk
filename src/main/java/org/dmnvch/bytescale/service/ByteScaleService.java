@@ -1,10 +1,13 @@
 package org.dmnvch.bytescale.service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import okhttp3.*;
 import org.dmnvch.bytescale.client.ByteScaleApiClient;
+import org.dmnvch.bytescale.model.ApiResponse;
 import org.dmnvch.bytescale.model.JobResponseDto;
 import org.dmnvch.bytescale.model.UploadFileResponseDto;
+import retrofit2.Response;
 
 import java.io.File;
 
@@ -18,31 +21,44 @@ public class ByteScaleService {
     private final String appId;
     private final ByteScaleApiClient byteScaleApiClient;
 
+    public ApiResponse<UploadFileResponseDto> uploadFile(final File file) {
+        final String authHeader = AUTH_HEADER_NAME + publicKey;
+        final RequestBody fileBody = RequestBody.create(file, MediaType.parse("application/octet-stream"));
+        final MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
 
-    public UploadFileResponseDto uploadFile(final File file) {
+        return uploadFile(authHeader, filePart);
+    }
+
+    public ApiResponse<UploadFileResponseDto> uploadFile(final MultipartBody.Part filePart) {
+        final String authHeader = AUTH_HEADER_NAME + publicKey;
+        return uploadFile(authHeader, filePart);
+    }
+
+    private ApiResponse<UploadFileResponseDto> uploadFile(String authHeader, MultipartBody.Part filePart) {
         try {
-            final String authHeader = AUTH_HEADER_NAME + publicKey;
-            final RequestBody fileBody = RequestBody.create(file, MediaType.parse("application/octet-stream"));
-            final MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), fileBody);
+            retrofit2.Call<UploadFileResponseDto> call = byteScaleApiClient.uploadFile(authHeader, filePart, appId);
+            Response<UploadFileResponseDto> response = call.execute();
 
-            return byteScaleApiClient.uploadFile(authHeader, filePart, appId).blockingGet();
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
+            if (response.isSuccessful()) {
+                return ApiResponse.success(response.body());
+            } else {
+                if (response.errorBody() != null) {
+                    String errorBodyString = response.errorBody().string();
+                    UploadFileResponseDto errorResponse = new ObjectMapper().readValue(errorBodyString, UploadFileResponseDto.class);
+                    return ApiResponse.failure("Upload failed with errors: " + errorResponse.getErrors());
+                } else {
+                    return ApiResponse.failure("Upload failed with unknown error. Response code: " + response.code());
+                }
+            }
+        } catch (Exception e) {
+            return ApiResponse.failure("Upload failed: " + e.getMessage());
         }
     }
 
-    public UploadFileResponseDto uploadFile(final MultipartBody.Part filePart) {
-        try {
-            final String authHeader = AUTH_HEADER_NAME + publicKey;
-            return byteScaleApiClient.uploadFile(authHeader, filePart, appId).blockingGet();
-        } catch (final Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
 
     public boolean deleteFileUpload(final String filePath) {
         final String authHeader = AUTH_HEADER_NAME + secretKey;
-        byteScaleApiClient.deleteFileUpload(authHeader, filePath, appId);
+        byteScaleApiClient.deleteFileUpload(authHeader, appId, filePath);
         return true;
     }
 

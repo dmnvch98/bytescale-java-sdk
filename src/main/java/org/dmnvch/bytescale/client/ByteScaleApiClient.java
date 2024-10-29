@@ -11,7 +11,7 @@ public interface ByteScaleApiClient {
 
     @Multipart
     @POST("v2/accounts/{appId}/uploads/form_data")
-    Single<UploadFileResponseDto> uploadFile(
+    Call<UploadFileResponseDto> uploadFile(
             @Header("Authorization") final String authorization,
             @Part final MultipartBody.Part filePart,
             @Path("appId") final String appId

@@ -7,6 +7,8 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.jackson.JacksonConverterFactory;
 
+import java.util.concurrent.TimeUnit;
+
 public class ByteScaleServiceBuilder {
 
     private String publicKey;
@@ -30,14 +32,18 @@ public class ByteScaleServiceBuilder {
     }
 
     public ByteScaleService build() {
-        OkHttpClient client = new OkHttpClient.Builder().build();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
+                .build();
+
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(BYTESCALE_URL)
                 .client(client)
                 .addConverterFactory(JacksonConverterFactory.create())
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build();
-
 
         ByteScaleApiClient byteScaleApiClient = retrofit.create(ByteScaleApiClient.class);
         return new ByteScaleService(publicKey, secretKey, appId, byteScaleApiClient);
