@@ -1,5 +1,6 @@
 package org.dmnvch.bytescale.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -14,7 +15,9 @@ import java.util.List;
 @Getter
 @ToString
 @EqualsAndHashCode
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UploadFileResponseDto {
+
     @JsonProperty("files")
     private final List<FileInfo> files;
 
@@ -26,6 +29,7 @@ public class UploadFileResponseDto {
     @Getter
     @ToString
     @EqualsAndHashCode
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class FileInfo {
         @JsonProperty("formDataFieldName")
         private final String formDataFieldName;
@@ -48,6 +52,7 @@ public class UploadFileResponseDto {
     @Getter
     @ToString
     @EqualsAndHashCode
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ErrorInfo {
         @JsonProperty("formDataFieldName")
         private final String formDataFieldName;
@@ -61,6 +66,7 @@ public class UploadFileResponseDto {
     @Getter
     @ToString
     @EqualsAndHashCode
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ErrorDetails {
         @JsonProperty("message")
         private final String message;
@@ -77,11 +83,15 @@ public class UploadFileResponseDto {
     @Getter
     @ToString
     @EqualsAndHashCode
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ErrorDetailsInfo {
         @JsonProperty("triggeredBy")
         private final String triggeredBy;
 
         @JsonProperty("submittedValue")
         private final String submittedValue;
+
+        @JsonProperty("tip")
+        private final String tip;
     }
 }
