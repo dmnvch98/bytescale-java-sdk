@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.extern.jackson.Jacksonized;
+import org.dmnvch.bytescale.model.enumeration.MalwareCheckStatus;
 
 import java.util.List;
 
@@ -93,33 +94,6 @@ public class JobResponseDto {
                 @JsonProperty("skippedReason")
                 private String skippedReason;
 
-                public enum MalwareCheckStatus {
-
-                    HEALTHY("Healthy"),
-                    INFECTED("Infected"),
-                    SKIPPED("Skipped");
-
-                    private final String status;
-
-                    MalwareCheckStatus(String status) {
-                        this.status = status;
-                    }
-
-                    @JsonCreator
-                    public static MalwareCheckStatus fromString(String status) {
-                        for (MalwareCheckStatus checkStatus : MalwareCheckStatus.values()) {
-                            if (checkStatus.status.equalsIgnoreCase(status)) {
-                                return checkStatus;
-                            }
-                        }
-                        throw new IllegalArgumentException("Unknown status: " + status);
-                    }
-
-                    @Override
-                    public String toString() {
-                        return status;
-                    }
-                }
             }
 
             @Getter
