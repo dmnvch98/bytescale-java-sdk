@@ -10,6 +10,7 @@ import org.dmnvch.bytescale.model.UploadFileResponseDto;
 import retrofit2.Response;
 
 import java.io.File;
+import java.io.IOException;
 
 @RequiredArgsConstructor
 public class ByteScaleService {
@@ -58,8 +59,13 @@ public class ByteScaleService {
 
     public boolean deleteFileUpload(final String filePath) {
         final String authHeader = AUTH_HEADER_NAME + secretKey;
-        byteScaleApiClient.deleteFileUpload(authHeader, appId, filePath);
-        return true;
+        retrofit2.Call<Void> call = byteScaleApiClient.deleteFileUpload(authHeader, appId, filePath);
+        try {
+            final Response<Void> response = call.execute();
+            return response.isSuccessful();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public JobResponseDto getAntivirusCheck(final String filePath) {
